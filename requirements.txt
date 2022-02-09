@@ -1,2 +1,2 @@
-igraph
+graph-tool
 matplotlib
