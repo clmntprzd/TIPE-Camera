@@ -23,6 +23,9 @@ for v in  g.vertices():
 
 #### Connexité
 
+
+
+
 def genlist(gen):
     L=[]
     for i in gen:
