@@ -47,13 +47,13 @@ def GraphAvecPosition(Lpos):
 def norm(A,B):
     (i,j)=A; (g,h)=B
     return np.sqrt((i-g)**2+(j-h)**2)
-def ListeDistance(Lpos,i):
+def ListeDistance(Lpos,vi,i):
     L=[]; P=[j for j in range(len(Lpos))]
     for j in range(len(Lpos)):
-        if not i==j:
-            L.append(norm(Lpos[i],Lpos[j]))
+        if not vi==j:
+            L.append(norm(Lpos[vi],Lpos[j]))
     Lsorted , Psorted =zip(*sorted(zip(L,P)))
-    return Psorted
+    return Psorted[0:i]
 def AppartientDroite(A,B,C):
     if A==B:
         return False
@@ -91,8 +91,8 @@ def ConnectionGraph(Lpos):
     LAre=[] ; LAreInd=[]
     for vi in range(len(Lpos)):
         i=choice(Num)
-        Candidats=ListeDistance(Lpos,i)
-        for j in range(i+1):
+        Candidats=ListeDistance(Lpos,vi,i)
+        for j in range(i):
             vj=Candidats[j]
             if (not [vi,vj] in LAreInd) and (not [vj,vi] in LAreInd):
                 if not Coupe(Lpos[vi],Lpos[vj],LAre):
