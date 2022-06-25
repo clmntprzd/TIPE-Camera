@@ -13,7 +13,7 @@ LON   1° ==== 73339m
 @author: clement
 """
 from tqdm import tqdm
-from graph_tool.all import *
+
 import csv
 import json
 def Proche(A,B):
@@ -27,13 +27,6 @@ def C2P(C):
     return [float(C[2]),float(C[3])]
 
 
-G=Graph(directed=False)
-vprop = G.new_vertex_property("int")
-G.vertex_properties["num"]=vprop
-vlong= G.new_vertex_property("float")
-G.vertex_properties["long"]=vlong
-vlat= G.new_vertex_property("float")
-G.vertex_properties["lat"]=vlat
 
 Routes=[]
 Croisement={"pos":[], "rues":[]} 
@@ -51,8 +44,10 @@ with open('data/croisements_rues_paris.csv', newline='') as f:
                     crois=i ; Doublon=True
                     break
             if Doublon:
-                Croisement["rues"][i].append(row[0])
-                Croisement["rues"][i].append(row[1])
+                if row[0] not in Croisement["rues"][i]:
+                    Croisement["rues"][i].append(row[0])
+                if row[1] not in Croisement["rues"][i]:
+                    Croisement["rues"][i].append(row[1])
             else:
                 Croisement["pos"].append(C2P(row))
                 Croisement["rues"].append([row[0], row[1]])
@@ -60,11 +55,11 @@ with open('data/croisements_rues_paris.csv', newline='') as f:
             if row[i] not in Routes:
                 Routes.append(row[i])
 
-f = open("routes.json", "w")
+f = open("routes2.json", "w")
 f.write(json.dumps(Routes))
 f.close()
 print("Routes Saved")
-f = open("croisement.json", "w")
+f = open("croisement2.json", "w")
 f.write(json.dumps(Croisement))
 f.close()
 print("Croisement Saved")
