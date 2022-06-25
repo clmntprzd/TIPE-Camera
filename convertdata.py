@@ -12,9 +12,10 @@ LON   1° ==== 73339m
 
 @author: clement
 """
+from tqdm import tqdm
 from graph_tool.all import *
 import csv
-
+import json
 def Proche(A,B):
     dlon=A[0]-B[0]
     dlat= A[1]-B[1]
@@ -34,13 +35,42 @@ G.vertex_properties["long"]=vlong
 vlat= G.new_vertex_property("float")
 G.vertex_properties["lat"]=vlat
 
-Croisement=[] 
+Routes=[]
+Croisement={"pos":[], "rues":[]} 
 with open('data/croisements_rues_paris.csv', newline='') as f:
     reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_NONE)
-    for row in reader:
-        Croisement.append(row)
-s=0
-CroisementDisctinct=
+    next(reader)
+    for row in tqdm(reader):
+        if len(Croisement)==0:
+            Croisement["pos"].append(C2P(row))
+            Croisement["rues"].append([row[0], row[1]])
+        else :
+            crois=0 ; Doublon=False
+            for i in range(len(Croisement["pos"])):
+                if Proche(Croisement["pos"][i],C2P(row)):
+                    crois=i ; Doublon=True
+                    break
+            if Doublon:
+                Croisement["rues"][i].append(row[0])
+                Croisement["rues"][i].append(row[1])
+            else:
+                Croisement["pos"].append(C2P(row))
+                Croisement["rues"].append([row[0], row[1]])
+        for i in range(2):
+            if row[i] not in Routes:
+                Routes.append(row[i])
+
+f = open("routes.json", "w")
+f.write(json.dumps(Routes))
+f.close()
+print("Routes Saved")
+f = open("croisement.json", "w")
+f.write(json.dumps(Croisement))
+f.close()
+print("Croisement Saved")
+                    
+        
+
 
 
 
