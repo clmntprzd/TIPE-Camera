@@ -24,9 +24,21 @@ G.vertex_properties["long"]=vlong
 vlat= G.new_vertex_property("float")
 G.vertex_properties["lat"]=vlat
 
+def Proche(A,B):
+    dlon=A[0]-B[0]
+    dlat= A[1]-B[1]
+    dx=dlon*(111120)
+    dy=dlat*(73339)
+    l=dx**2 + dy**2
+    return l<900**2
+
 def norm(A,B):
-    (i,j)=(A[0],A[1]); (g,h)=(B[0],B[1])
-    return ((i-g)**2+(j-h)**2)**0.5
+    dlon=A[0]-B[0]
+    dlat= A[1]-B[1]
+    dx=dlon*(111120)
+    dy=dlat*(73339)
+    l=dx**2 + dy**2
+    return (l)**0.5
 
 def MeilleurChemin(Lind,Croisx):
     DeuxplusPr=[]
@@ -45,24 +57,53 @@ def MeilleurChemin(Lind,Croisx):
     for i in range(len(Lind)):
         
         vi=Lind[i]
+        Vint=[vi]
         vj = DeuxplusPr[i][0]
         C=[vi,vj]
         S=norm(Croisx[vi],Croisx[vj])
-        for j in range(len(Lind)):
+        for j in range(len(Lind)-1):
             
-            if DeuxplusPr[Lind.index(vj)][0]==vi:
+            if DeuxplusPr[Lind.index(vj)][0] in Vint :
  
                 (vi , vj)=(vj, DeuxplusPr[Lind.index(vj)][1])
                 
             else: 
                 (vi , vj)=(vj, DeuxplusPr[Lind.index(vj)][0])
             C.append(vj)
+            Vint.append(vi)
             S+=norm(Croisx[vi],Croisx[vj])
         Chemins.append(S)
         CheminInd.append(C)
     Lsorted , Psorted =zip(*sorted(zip(Chemins,CheminInd)))
     return Psorted[0]
-
+def MeilleurCheminFlemme(Lind,Croisx):
+    DeuxplusPr=[] ; LArri=[]; LArrj=[]
+    
+    if len(Lind)==2:
+        return(Lind)
+    L=[]
+    for i in range(len(Lind)):
+        for j in range(len(Lind)):
+            if not i==j:
+                L.append(norm(Croisx[Lind[i]],Croisx[Lind[j]]))
+    Lsorted=sorted(L, reverse=True)
+    lim=Lsorted[2]
+    for i in range(len(Lind)):
+        L=[] ; P=[]
+        for j in range(len(Lind)):
+            if not i==j:
+                L.append(norm(Croisx[Lind[i]],Croisx[Lind[j]]))
+                P.append(Lind[j])
+        Lsorted , Psorted =zip(*sorted(zip(L,P)))
+        DeuxplusPr.append(Psorted[0:2])
+    
+    for vi in Lind:
+        i=Lind.index(vi)
+        for vj in DeuxplusPr[i]:
+            if norm(Croisx[vi],Croisx[vj])<lim:
+                    LArri.append(vi)
+                    LArrj.append(vj)
+    return LArri, LArrj
 for i in range(0,len(Croisement["pos"])):
         v=G.add_vertex()
         G.vp.num[v]=i
@@ -79,12 +120,14 @@ for route in tqdm(Routes):
     """
     if len(Crois)==1 or len(Crois)==0 :
         continue
-    Chemin=MeilleurChemin(Crois,Croisement["pos"])
+    Chemini , Cheminj=MeilleurCheminFlemme(Crois,Croisement["pos"])
+    if isinstance(Chemini,int):
+         G.add_edge(G.vertex(Chemini),G.vertex(Cheminj)) 
+    else:
+        for i in range(len(Chemini)):
+            G.add_edge(G.vertex(Chemini[i]),G.vertex(Cheminj[i])) 
+
     
-    for i in range(len(Chemin)-1):
-        j=i+1
-        G.add_edge(G.vertex(Chemin[i]),G.vertex(Chemin[j])) 
-    
-G.save("testparis.gt")
+G.save("testparisflemme2.gt")
     
     
