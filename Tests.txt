@@ -1,0 +1,39 @@
+>>> Comparaison(g,6)
+# Regardons ce qu'on obtient théoriquement de manière maximale pour  6  caméras
+0.7142857142857143
+ en  23.372636556625366  secondes
+Maintenant, notre algorithme aléatoire : 
+# Pour 20 essais
+0.5714285714285714
+ en  0.0007491111755371094  secondes
+# Pour 200 essais
+0.6
+ en  0.005068778991699219  secondes
+# Pour 2000 essais
+0.6571428571428571
+ en  0.0533144474029541  secondes
+# Pour 20000 essais
+0.6571428571428571
+ en  0.6537003517150879  secondes
+>>> g
+<Graph object, undirected, with 35 vertices and 49 edges, at 0x7fe7947ec310>
+
+
+<Graph object, undirected, with 50 vertices and 75 edges, at 0x7fe7946537f0>
+>>> Comparaison(g,6)
+# Regardons ce qu'on obtient théoriquement de manière maximale pour  6  caméras
+0.58
+ en  232.18130707740784  secondes
+Maintenant, notre algorithme aléatoire : 
+# Pour 20 essais
+0.42
+ en  0.0006625652313232422  secondes
+# Pour 200 essais
+0.46
+ en  0.0057985782623291016  secondes
+# Pour 2000 essais
+0.5
+ en  0.061315059661865234  secondes
+# Pour 20000 essais
+0.54
+ en  0.7192022800445557  secondes
