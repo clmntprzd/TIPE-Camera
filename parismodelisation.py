@@ -32,5 +32,19 @@ def Montrer(G,LCam):
 
 
 c = open("camera.json", "r")
-camera=json.loads(c.read())   
-Montrer(g,camera)
+Cameras=json.loads(c.read())   
+#Montrer(g,camera)
+Couverture = []
+L=g.get_total_degrees(g.get_vertices())
+P=g.get_vertices()
+Lsorted , Psorted =zip(*sorted(zip(L,P)))
+#Cameras=Psorted[0:710]
+S=0
+for c in Cameras:
+    if c in Psorted[0:710]:
+        S+=1
+for k in range(len(Cameras)):
+        for w in g.get_out_neighbors(Cameras[k]):
+            #print(w," est sommet couvert par le sommet", Cameras[k] )
+            if w not in Couverture : 
+                Couverture.append(w)

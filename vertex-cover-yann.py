@@ -11,6 +11,7 @@ from graph_tool.all import *
 import graph_tool.generation
 import graph_tool.topology
 from random import choices
+from tqdm import tqdm
 g = Graph(directed=False)
 v1 = g.add_vertex()
 v2 = g.add_vertex()
@@ -59,7 +60,7 @@ def vertex_cover(g):
 
 
 
-graph_tool.draw.graph_draw(until_planar(20))
+#graph_tool.draw.graph_draw(until_planar(20))
 
 
 
@@ -108,22 +109,27 @@ def binomial(k,n):
 binomial(3,6)
 
 def OptimisationAleatoire1(Nombre_Cameras, Graphe, T):
-    print("Il y a ", Nombre_Cameras," parmi ", len(Graphe.get_vertices())," configurations de placements possibles, soit ", int(binomial(Nombre_Cameras, len(Graphe.get_vertices()))))
+    #print("Il y a ", Nombre_Cameras," parmi ", len(Graphe.get_vertices())," configurations de placements possibles, soit ", int(binomial(Nombre_Cameras, len(Graphe.get_vertices()))))
+    
     Sommets = List_of_Array(Graphe.get_vertices())
     Placements = []
-    for i in range(1,T+1):
+    MeilleurScore=0
+    for i in tqdm(range(1,T+1)):
         S = list(Sommets)
         shuffle(S)
-        Cameras = S[0 : Nombre_Cameras-1]
+        Cameras = S[0 : Nombre_Cameras]
         #print("Caméras choisies :", Cameras)
         Couverture = []
         for k in range(len(Cameras)):
-            for w in List_of_Array(Graphe.get_out_neighbors(Cameras[k])):
+            for w in Graphe.get_out_neighbors(Cameras[k]):
                 #print(w," est sommet couvert par le sommet", Cameras[k] )
                 if w not in Couverture : 
                     Couverture.append(w)
-        Placements.append((Cameras, len(Couverture)/len(Sommets)))
-    return Placements 
+        score=len(Couverture)/len(Sommets)
+        if score>MeilleurScore:
+            Placements=Cameras
+            MeilleurScore=score
+    return Placements, MeilleurScore
 
 def MO(L):
     S = []
