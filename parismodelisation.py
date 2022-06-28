@@ -22,7 +22,7 @@ def Montrer(G,LCam):
     for e in tqdm(G.iter_edges()):
         (v1, v2)=e
         plt.plot([G.vp.long[v1],G.vp.long[v2]],[G.vp.lat[v1],G.vp.lat[v2]],"g-")
-    for v in LCam:
+    for v in tqdm(LCam):
 #        plt.plot(G.vp.long[G.vertex(v)],G.vp.lat[G.vertex(v)],"ro")
         for e in G.iter_all_edges(G.vertex(v)):
             (v1, v2)=e
